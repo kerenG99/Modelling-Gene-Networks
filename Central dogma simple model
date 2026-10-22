@@ -1,0 +1,50 @@
+#dM/dt = km-¥mM M-abundance of mrna km-production rate ¥m degradation rate. + dP/dt= kpM -¥pP
+#steady state (derivative=0) = production rate divided degradation rate, where no chnage occurs ie =o, when you find for M substitute it in P
+#  steady state M = km/¥mM For P kp(km/¥mM)/ ¥pP
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import odeint #ode solver
+
+#setting inital condition
+y0 = [0,0] #mrna,protein
+#time point
+t= np.linspace(0,300, num=150) #from o to 300 with 150 timepoints
+
+#define parameters
+k_m=0.4
+gamma_m = 0.02 #should be smaller degradation rate
+k_p = 0.6
+gamma_p = 0.04
+
+params = [k_m, gamma_m,k_p,gamma_p] #array
+
+
+
+def sim(variables,t,params) :
+    m = variables[0]
+    p = variables [1]  #saying here that the first element is intial condition of m and the second one is intial condition of p in the varable [ 0,0]
+
+    k_m = params [0]
+    gamma_m = params [1]
+    k_p = params [2]
+    gamma_p = params [3]
+
+    dmdt = k_m - gamma_m * m
+    dpdt = k_p * m - gamma_p * p
+
+    return ([dmdt,dpdt]) 
+
+y = odeint(sim, y0, t, args=(params,))
+
+f,ax = plt.subplots(1)
+
+line1, = ax.plot(t,y[:,0], color="b", label="M")
+line2, = ax.plot(t,y[:,1], color="r", label="p")
+
+ax.set_ylabel("Abundance")
+ax.set_xlabel("Time")
+
+ax.legend(handles=[line1,line2])
+
+plt.show()
+            
